@@ -1,0 +1,11 @@
+{
+  "name": "mojs",
+  "description": "A js library depends on requirejs",
+  "version": "0.1.0",
+  "author": "Mu Haibao<mhbseal@163.com>",
+  "homepage": "http://github.com/mhbseal/mojs",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-requirejs": "^0.4.4"
+  }
+}
