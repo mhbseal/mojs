@@ -5,8 +5,6 @@
  * @date   2015/4/30
  *
  * @name   pubSub
- * @example
- * define(['pubSub'], function(pubSub) { ... })
  */
 define(['es5', 'objectPath'], function (es5, objectPath) {
 	"use strict";

@@ -8,3 +8,6 @@
 
 # 测试覆盖报告
 /testCoverageReporter
+
+# npm
+npm-debug.log
