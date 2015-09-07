@@ -1,12 +1,14 @@
 var
+  isProdEnv = ~process.argv.indexOf('--prod'),
   webpack = require('webpack'),
-  version = require('./package.json').version;
+  version = require('./package.json').version,
+  config;
 
-module.exports = {
-  entry: './webpack.mo',
+config = {
+  entry: './webpack.output',
   output: {
     path: './dist',
-    filename: 'mo-' + version + '.min.js',
+    filename: 'mo-' + version + (isProdEnv ? '.min' : '') + '.js',
     library: 'mo',
     libraryTarget: 'umd'
   },
@@ -34,10 +36,15 @@ module.exports = {
       'mo.js v' + version + '\n' +
       'http://mhbseal.com/api/mojs.html\n' +
       '(c) 2014-' + new Date().getFullYear() + ' Mu Haibao'
-    ),
+    )
+  ]
+};
+
+if (isProdEnv) {
+  config.plugins.push(
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: '"production"'
+        'NODE_ENV': '"production"'
       }
     }),
     new webpack.optimize.UglifyJsPlugin({
@@ -45,5 +52,7 @@ module.exports = {
         warnings: false
       }
     })
-  ]
-};
+  )
+}
+
+module.exports = config;

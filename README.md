@@ -1,2 +1,4 @@
 # mojs
-A js library depends on requirejs.http://mhbseal.com/api/mojs.html
+A javascript library
+
+API: http://mhbseal.com/api/mojs.html

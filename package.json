@@ -1,16 +1,20 @@
 {
   "name": "mojs",
-  "description": "a javascript library",
+  "description": "A javascript library",
   "version": "0.2.0",
   "author": "Mu Haibao<mhbseal@163.com>",
   "homepage": "http://github.com/mhbseal/mojs",
   "scripts": {
-    "build": "webpack"
+    "build": "npm run build.dev & npm run build.prod",
+    "build.dev": "webpack",
+    "build.prod": "webpack --prod",
+    "test": "karma start"
   },
   "devDependencies": {
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
     "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.0",
     "karma-firefox-launcher": "^0.1.6",
     "karma-ie-launcher": "^0.2.0",
     "karma-jasmine": "^0.3.6",

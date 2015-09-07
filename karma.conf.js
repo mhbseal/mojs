@@ -1,53 +1,41 @@
+var
+  webpackConfig = require('./webpack.config');
+
 module.exports = function(config) {
   config.set({
     basePath: './test',
     frameworks: ['jasmine'],
     files: [
-      '*.spec.js',
       '**/*.spec.js'
     ],
     preprocessors: {
-      '*.spec.js': ['webpack'],
-      '**/*.spec.js': ['webpack']
+      '**/*.spec.js': ['webpack', 'coverage']
     },
     webpack: {
-      resolve: {
-        root: './src',
-        alias: {
-          AbstractStorage: 'store/AbstractStorage',
-          AbstractStore: 'store/AbstractStore',
-          LocalStore: 'store/LocalStore',
-          SessionStore: 'store/SessionStore',
-          common: 'common',
-          Cookie: 'Cookie',
-          date: 'date',
-          es5: 'es5.shim',
-          IdCard: 'IdCard',
-          objectPath: 'object.path',
-          ParseUrl: 'parse.url',
-          pubSub: 'pubSub',
-          rules: 'rules',
-          util: 'util'
-        }
-      }
+      resolve: webpackConfig.resolve
     },
-    webpackMiddleware: { // 这个干吗的？
+    webpackMiddleware: {
       noInfo: true
     },
-    reporters: ['progress'], // 这个干吗的？
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      type: 'html',
+      dir: '../testCoverageReporter'
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome', 'Firefox', 'Safari', 'IE'],
-    singleRun: false, // 这个干吗的？
+    singleRun: false, // 启动浏览器运行完测试后是否自动退出
     plugins: [
-      require("karma-webpack"),
-      require("karma-jasmine"),
-      require("karma-chrome-launcher"),
-      require("karma-firefox-launcher"),
-      require("karma-safari-launcher"),
-      require("karma-ie-launcher")
+      'karma-webpack',
+      'karma-jasmine',
+      'karma-chrome-launcher',
+      'karma-firefox-launcher',
+      'karma-safari-launcher',
+      'karma-ie-launcher',
+      'karma-coverage'
     ]
   })
 }
