@@ -5,7 +5,7 @@
  * @date   2014/11/20
  *
  * @name   rules
- * @examples
+ * @example
  * // 校验，返回值为true/false
  * rules.isRequired('校验文本') // 必填
  * rules.isChinese(..) // 中文

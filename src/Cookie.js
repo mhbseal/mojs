@@ -5,8 +5,6 @@
  * @date   2014/09/12
  *
  * @name   Cookie
- * @example
- * define(['Cookie'], function(Cookie) { ... })
  */
 define(['common', 'es5'], function(c, es5) {
 	"use strict";
@@ -34,7 +32,9 @@ define(['common', 'es5'], function(c, es5) {
    * @name Cookie
    * @grammar new Cookie(options)
    * @example
-   * var cookie = new Cookie();
+   * var
+   *   cookie = new Cookie(),
+   *   cookie2 = new Cookie({isRaw: true, isJson: true});
 	 */
 	function Cookie(options) {
 		this.options = c.extend({
@@ -54,10 +54,11 @@ define(['common', 'es5'], function(c, es5) {
    *   - domain  {string} 域,domain只能设置当前domain的子domain, 默认为当前domain
    *   - secure  {boolean} 安全策略,只有https下能设置 ture or false, 默认为false
    *
-   * @name  set
+   * @name    set
    * @grammar cookie.set(name, value[, options])
    * @example
-   * cookie.set('user', 'mo')
+   * cookie.set('user', 'mo');
+   * cookie2.set('user2', {a: 'mojs', b: 'modoc'}, {expires: 1});
    */
   Cookie.prototype.set = function(name, value, options) {
     var
@@ -67,7 +68,7 @@ define(['common', 'es5'], function(c, es5) {
     if(options.expires) expires.setTime(+expires + +options.expires * 864e+5);
 
     document.cookie = [
-      encode(name), '=', stringifyCookie(value),
+      encode(name, this.options.isRaw), '=', stringifyCookie(value, this.options.isJson),
       options.expires ? '; expires=' + expires : '', // use expires attribute, max-age is not supported by IE
       options.path    ? '; path=' + options.path : '',
       options.domain  ? '; domain=' + options.domain : '',
@@ -84,7 +85,8 @@ define(['common', 'es5'], function(c, es5) {
    * @name    get
    * @grammar cookie.get(name)
    * @example
-   * cookie.get('user')
+   * cookie.get('user') => 'mo'
+   * cookie2.get('user2') => {a: 'mojs', b: 'modoc'}
 	 */
 	Cookie.prototype.get = function(name) {
 		var
@@ -95,10 +97,10 @@ define(['common', 'es5'], function(c, es5) {
 		es5.each(cookies, function(cookie) {
 			var
 				parts = cookie.split('='),
-				key = decode(parts[0], this.isRaw);
+				key = decode(parts[0], this.options.isRaw);
 
 			if (name === key) {
-				result = parseCookie(parts[1], this.isJson);
+				result = parseCookie(parts[1], this.options.isJson);
 				return false;
 			}
 		}, this)
