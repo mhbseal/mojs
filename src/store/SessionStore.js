@@ -7,7 +7,6 @@
  * @name   SessionStore
  * @example
  * var store = new AbstractStore({
- *   proxy: window.sessionStore, // 默认值
  *   key: 'USER'
  * })
  */
@@ -16,9 +15,11 @@ define(['common', 'AbstractStore'], function (c, AbstractStore) {
 
 	var
 		SessionStore = c.baseClass(function (options) {
-			this.options = c.extend(this.options, {
-				proxy: window.sessionStorage
-			}, options)
+			c.extend(this.options, options, {
+        proxy: window.sessionStorage
+      })
+
+      this.init();
 		}, AbstractStore);
 
 	return SessionStore;

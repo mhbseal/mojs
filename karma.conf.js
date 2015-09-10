@@ -17,7 +17,7 @@ module.exports = function(config) {
     webpackMiddleware: {
       noInfo: true
     },
-    reporters: ['progress'/*, 'coverage'*/],
+    reporters: ['progress', 'coverage'],
     coverageReporter: {
       type: 'html',
       dir: '../testCoverageReporter'
@@ -26,7 +26,7 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'/*, 'Firefox', 'Safari', 'IE'*/],
+    browsers: ['Chrome', 'Firefox', 'Safari'/*, 'IE'*/],
     singleRun: false, // 启动浏览器运行完测试后是否自动退出
     plugins: [
       'karma-webpack',

@@ -351,7 +351,7 @@ define(function () {
       window.console && Function.apply.call(console.log, console, arguments);
     },
     /**
-     * 同Objec.create(prototype)
+     * 同Object.create(prototype)
      *
      * @param  {object} prototype
      * @return {object} 原型为参数prototype的对象
@@ -359,7 +359,8 @@ define(function () {
      * @name    baseCreate
      * @grammar c.baseCreate(prototype)
      * @example
-     * c.prototype({a: function(){}, b: function() {}})
+     * c.baseCreate() => {}
+     * c.baseCreate({ a: Foo }).a => Foo
      */
     baseCreate: function(prototype) {
       if (!this.isObject(prototype)) return {};

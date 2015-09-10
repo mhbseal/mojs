@@ -193,7 +193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				 * @param  {string} key
 				 * @param  {*} value
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
-				 * @param  {number} 可选,失效时间,默认 now+1天
+				 * @param  {number} 可选,失效时间,默认 now+1天的时间戳
 				 * @param  {string} 可选,默认false,是否设置回滚数据
 				 * @return {boolean} 成功true,失败false
 				 */
@@ -204,8 +204,8 @@ return /******/ (function(modules) { // webpackBootstrap
 						storage = this.options.storage,
 						otherValue, oldValue;
 
-					if (timeout == null || timeout < now) timeout = now + 24 * 60 * 60 * 1000; // 默认 now+1天
-					if (this.getTag(key) === tag) otherValue = this.get(key, tag, !isOld);
+					if (timeout == null) timeout = now + 24 * 60 * 60 * 1000; // 默认 now+1天
+					if (tag == null || this.getTag(key) === tag) otherValue = this.get(key, tag, !isOld);
 
 					if (isOld) { // 设置回滚数据
 						oldValue = value;
@@ -265,14 +265,14 @@ return /******/ (function(modules) { // webpackBootstrap
 				 * 设置key的失效时间
 	       *
 				 * @param  {string} key
+	       * @param  {number} timeout
 				 * @return {boolean} 成功true,失败false
 				 */
 				setExpireTime: function (key, timeout) {
 					var obj = this.options.storage.getItem(key);
 					if (obj) {
 						obj = JSON.parse(obj);
-						if (timeout < obj.timeout) return;
-						return this.set(key, value, tag, timeout);
+					  return this.set(key, obj.value, obj.tag, timeout);
 					}
 					return false;
 				},
@@ -320,7 +320,6 @@ return /******/ (function(modules) { // webpackBootstrap
 							} else {
 								TimeMapResult.push(value);
 							}
-							;
 						}
 						// 将剩余的key存入缓存中，没有则删除timeMap这个key
 						TimeMapResult.length ? storage.setItem(timeMapKey, JSON.stringify(TimeMapResult)) : storage.removeItem(timeMapKey);
@@ -343,7 +342,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   common
 	 * @example
-	 * define(['common'], function(c) { ... })
+	 * var foo, obj1, obj2, obj3;
+	 *
+	 * function Foo () {
+	 *   this.a = 1
+	 * };
+	 * Foo.prototype.b = 2;
+	 * foo = new Foo();
+	 *
+	 * obj1 = {
+	 *   a: 1,
+	 *   b: 2,
+	 *   toString: 3,
+	 *   isPrototypeOf: 4,
+	 *   constructor: 5
+	 * };
+	 * obj2 = {
+	 *   b: 22,
+	 *   c: {
+	 *     d: 6
+	 *   }
+	 * };
+	 * obj3 = {
+	 *   c: {
+	 *     e: 7,
+	 *     f: {
+	 *       g: 8,
+	 *       h: 9
+	 *     }
+	 *   }
+	 * };
 	 */
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 		"use strict";
@@ -371,7 +399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			return typeof obj === 'object' || typeof obj === 'function' ? class2type[toString.call(obj)] : typeof obj;
 		};
 
-		'Boolean Number String Function Date RegExp Object'.replace(rWord, function(name) {
+		'Boolean Number String Function Date RegExp Object Array'.replace(rWord, function(name) {
 			var lowerName = name.toLowerCase();
 			class2type['[object ' + name + ']'] = lowerName; // for common.type method
 			common['is' + name] = function(obj) {
@@ -384,6 +412,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @name has
 	   * @grammar c.has(obj, key)
+	   * @example
+	   * c.has(foo, 'a') => true
+	   * c.has(foo, 'b') => false
 	   */
 		common.has = function(obj, key) {
 			return hasOwn.call(obj, key);
@@ -402,9 +433,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name    forIn
 	   * @grammar c.forIn(obj, iteratee[, context])
 	   * @example
-	   * c.forIn({a: 1, b: 2, toString: 3}, function(v, k) {
-	   *   console.log(k + ':' + v) => 依次输出: 'a: 1', 'b: 2', 'toString: 3'
+	   * c.forIn(obj1, function(v, k) {
+	   *   console.log(k + ':' + v)
 	   * })
+	   * => 依次输出: 'a: 1', 'b: 2', 'toString: 3', 'isPrototypeOf: 4', 'constructor: 5'
 		 */
 		common.forIn = function(obj, cb, context) {
 			for (var key in obj) if (cb.call(context, obj[key], key, obj) === false) return; // normal
@@ -413,7 +445,10 @@ return /******/ (function(modules) { // webpackBootstrap
 				var
 					index = 0,
 					len = nonEnumerableProps.length;
-				for (; index < len; index++) if (cb.call(context, obj[index], index, obj) === false) return;
+
+				for (; index < len; index++) {
+	        if (common.has(obj, nonEnumerableProps[index]) && cb.call(context, obj[nonEnumerableProps[index]], nonEnumerableProps[index], obj) === false) return;
+	      }
 			}
 		}
 
@@ -428,11 +463,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name    extend
 	   * @grammar c.extend([isDeep,] obj1, obj2, obj3...)
 	   * @example
-	   * c.extend({a: 1}, {b: 2}, {c: 3}) => {a: 1, b: 2, c: 3}
+	   * c.extend(obj1, obj2) => {a: 1, b: 22, c: {d: 6}, toString: 3, isPrototypeOf: 4, constructor: 5}
 	   * // 浅拷贝
-	   * c.extend({a: {b: 1}}, {a: {c: 2}}) => {a: {c: 2}}
+	   * c.extend(obj2, obj3) => {b: 22, c: {e: 7, f: {g: 8, h: 9}}}
 	   * // 深度拷贝
-	   * c.extend(true, {a: {b: 1}}, {a: {c: 2}}) => {a: {b: 1, c: 2}}
+	   * c.extend(true, obj1, obj2, obj3)
+	   * => {a: 1, b: 22, c: {d: 6, e: 7, f: {g: 8, h: 9}}, toString: 3, isPrototypeOf: 4, constructor: 5}
 		 */
 		common.extend = function() {
 			var
@@ -471,9 +507,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            srcType = src && type(src);
 	            if (copyIsArray) {
 	              copyIsArray = false;
-	              clone = srcType === 'object' ? src : [];
+	              clone = srcType === 'array' ? src : [];
 	            } else {
-	              clone = srcType === 'array' ? src : {};
+	              clone = srcType === 'object' ? src : {};
 	            }
 							target[prop] = this.extend(deep, clone, copy);
 						} else { // 浅拷贝
@@ -496,7 +532,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @grammar c.type(*)
 	     * @example
 	     * c.type({a: 1}) => 'object'
-	     * c.type('mo.js') => 'string'
+	     * c.type('mojs') => 'string'
 	     * c.type(2) => 'number'
 	     */
 			type: function(obj) {
@@ -510,6 +546,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name isBoolean
 	     * @grammar c.isBoolean(*)
+	     * @example
+	     * c.isBoolean({a: 1}) => false
 	     */
 	    /**
 	     * 是否是Number类型
@@ -561,6 +599,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name    isArraylike
 	     * @grammar c.isArraylike(*)
+	     * @example
+	     * c.isArraylike([1, 2, 3]) => true
+	     * c.isArraylike({1: 1, 2: 2, 3: 3, length: 3}) => true
+	     * c.isArraylike({1: 1, 2: 2, 3: 3}) => false
 	     */
 	    isArraylike: function(obj) {
 	      var
@@ -574,6 +616,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name isNaN
 	     * @grammar c.isNaN(*)
+	     * @example
+	     * c.isNaN(NaN) => true
+	     * c.isNaN(undefined) => false
 	     */
 	    isNaN: function(obj) {
 	      return obj === undefined ? false : isNaN(obj);
@@ -583,6 +628,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name size
 	     * @grammar c.size(obj)
+	     * @example
+	     * c.size([1, 2, 3]) => 3
+	     * c.size({a: 1, b: 2}) => 2
 	     */
 			size: function(obj) {
 				if (obj == null) return 0;
@@ -592,6 +640,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * 去掉字符串前后的空
 	     * @name    trim
 	     * @grammar c.trim(text)
+	     * @example
+	     * c.trim(' abc defg ') => 'abc defg'
 	     */
 	    trim: function(text) {
 	      if (nativeTrim) return nativeTrim.call(text);
@@ -603,6 +653,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name keys
 	     * @grammar c.keys(obj)
+	     * @example
+	     * c.keys({a: 1, b: 2}) => ['a', 'b']
 	     */
 	    keys: function(obj) {
 	      var
@@ -635,7 +687,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      window.console && Function.apply.call(console.log, console, arguments);
 	    },
 	    /**
-	     * 同Objec.create(prototype)
+	     * 同Object.create(prototype)
 	     *
 	     * @param  {object} prototype
 	     * @return {object} 原型为参数prototype的对象
@@ -643,7 +695,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @name    baseCreate
 	     * @grammar c.baseCreate(prototype)
 	     * @example
-	     * c.prototype({a: function(){}, b: function() {}})
+	     * c.baseCreate() => {}
+	     * c.baseCreate({ a: Foo }).a => Foo
 	     */
 	    baseCreate: function(prototype) {
 	      if (!this.isObject(prototype)) return {};
@@ -713,23 +766,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 * store的抽象类,针对storage中的key,一般不使用该类,常用他的子类LocalStore(options.proxy = window.localStorage)、SessionStore(options.proxy = window.sessionStorage)
+	 * store的抽象类,针对storage中的key,一般不使用该类,常用他的子类LocalStore(options.storage = window.localStorage)、SessionStore(options.storage = window.sessionStorage)
 	 *
 	 * @author hbmu
 	 * @date   2015/4/10
 	 *
 	 * @name   AbstractStore
-	 * @example
-	 * define(['AbstractStore'], function(AbstractStore) { ... })
 	 */
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, objectPath) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(4), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, objectPath, AbstractStorage) {
 		"use strict";
 
 		/**
 		 * 根据liftTime 计算要增加的毫秒数
 	   *
 		 * @param   {string} liftTime 单位D,H,M,S. eg. '24H'
-		 * @return {number} 根据liftTime计算要增加的毫秒数
+		 * @return  {number} 根据liftTime计算要增加的毫秒数
 		 */
 		function getLifeTime(lifeTime) {
 			var
@@ -760,7 +811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * 构造函数
 	   *
 	   * @param {object} options
-	   *   - proxy           {storage} window.localStorage/window.sessionStorage
+	   *   - storage         {storage} window.localStorage/window.sessionStorage
 	   *   - key             {string} key
 	   *   - lifetime        {string} 生命周期,默认'1H' 单位D,H,M,S. eg. '24H'
 	   *   - rollbackEnabled {boolean} 是否回滚
@@ -769,22 +820,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @grammar new AbstractStore(options)
 	   * @example
 	   * var store = new AbstractStore({
-	   *   proxy: window.localStorage,
+	   *   storage: window.localStorage,
 	   *   key: 'USER'
 	   * }))
 	   */
 		var
 			AbstractStore = c.baseClass(function (options) {
 				this.options = c.extend({
-					proxy: null,
+	        storage: null,
 					key: null,
 					lifeTime: '1H',
-					rollbackEnabled: false,
+					rollbackEnabled: false
 				}, options);
 
-	      this.proxy = new AbstractStorage({
-	        storage: this.proxy
-	      })
+	      this.init = function() {
+	        this.proxy = new AbstractStorage({
+	          storage: this.options.storage
+	        })
+	      }
+
+	      this.init();
 			}, {
 				/**
 	       * 设置this.key下的value
@@ -800,7 +855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				set: function (value, tag, isOld) {
 					if (!this.options.rollbackEnabled && isOld) throw 'param rollbackEnabled is false'; // 如果不允许roolback,则不能设置回滚数据
 					var timeout = +new Date() + getLifeTime(this.options.lifeTime);
-					return this.options.proxy.set(this.options.key, value, tag, timeout, isOld);
+					return this.proxy.set(this.options.key, value, tag, timeout, isOld);
 				},
 				/**
 	       * 设置this.key下的value中name的value
@@ -844,7 +899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.get([tag][, isOld])
 				 */
 				get: function (tag, isOld) {
-					return this.options.proxy.get(this.options.key, tag, isOld);
+					return this.proxy.get(this.options.key, tag, isOld);
 				},
 				/**
 	       * 读取this.key下的value中name的value
@@ -867,7 +922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.getTag()
 				 */
 				getTag: function () {
-					return this.options.proxy.getTag(this.options.key);
+					return this.proxy.getTag(this.options.key);
 				},
 				/**
 	       * 移除存储对象
@@ -876,16 +931,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.remove()
 				 */
 				remove: function () {
-					return this.options.proxy.remove(this.options.key);
+					return this.proxy.remove(this.options.key);
 				},
 				/**
 	       * 设置失效时间
 	       *
+	       * @param  {number} timeout
+	       *
 	       * @name    setExpireTime
 	       * @grammar store.setExpireTime()
 				 */
-				setExpireTime: function () {
-					return this.options.proxy.setExpireTime(this.options.key);
+				setExpireTime: function (timeout) {
+					return this.proxy.setExpireTime(this.options.key, timeout);
 				},
 				/**
 	       * 返回失效时间
@@ -894,7 +951,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.getExpireTime()
 				 */
 				getExpireTime: function () {
-					return this.options.proxy.getExpireTime(this.options.key);
+					return this.proxy.getExpireTime(this.options.key);
 				},
 				/**
 	       * 回滚至上个版本
@@ -933,15 +990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   objectPath
 	 * @example
-	 * define(['objectPath'], function(objectPath) {
-	 *   var obj = {
-	 *      a: {
-	 *        b: {
-	 *          c: 'mo.js'
-	 *        }
-	 *      }
-	 *   }
-	 * })
+	 * var obj = { f: { g: 'blog' } };
 	 */
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 		"use strict";
@@ -958,8 +1007,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @name    set
 	     * @grammar objectPath.set(obj, path, value)
 	     * @example
-	     * objectPath.set(obj, 'a.d', 'mo.js') => obj.a.d = 'mo.js'
-	     * objectPath.set(obj, 'a.b.e', 'mo.js') => obj.a.b.e = 'mo.js'
+	     * objectPath.set(obj, 'a.d', 'mojs') => obj.a.d = 'mojs'
+	     * objectPath.set(obj, 'a.b.e', 'modoc') => obj.a.b.e = 'modoc'
 			 */
 			set: function (obj, path, value) {
 				if (!obj || !path) return false;
@@ -969,7 +1018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					i = 0,
 					len = pathArr.length;
 
-				while(i < len - 1) { // 遍历 .
+				while(i < len - 1) { // 遍历
 					var key = pathArr[i];
 					if(obj[key] == null) obj[key] = {};
 					if(typeof obj[key] !== 'object') return false; // 如果遍历到的value不是object、undefined、null则放弃操作
@@ -995,7 +1044,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @name    get
 	     * @grammar objectPath.set(obj, path)
 	     * @example
-	     * objectPath.get(obj, 'a.b.e') => 'mo.js'
+	     * objectPath.get(obj, 'f.g') => 'blog'
+	     * objectPath.get(obj, 'a.b.e') => 'mojs'
 			 */
 			get: function (obj, path) {
 				if (!obj || !path) return null;
@@ -1029,7 +1079,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @name   LocalStore
 	 * @example
 	 * var store = new AbstractStore({
-	 *   proxy: window.localStore, // 默认值
 	 *   key: 'USER'
 	 * })
 	 */
@@ -1038,9 +1087,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		var
 			LocalStore = c.baseClass(function (options) {
-				this.options = c.extend(this.options, {
-					proxy: window.localStorage
-				}, options)
+	      c.extend(this.options, options, {
+	        storage: window.localStorage
+	      })
+
+	      this.init();
 			}, AbstractStore);
 
 		return LocalStore;
@@ -1059,7 +1110,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @name   SessionStore
 	 * @example
 	 * var store = new AbstractStore({
-	 *   proxy: window.sessionStore, // 默认值
 	 *   key: 'USER'
 	 * })
 	 */
@@ -1068,9 +1118,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		var
 			SessionStore = c.baseClass(function (options) {
-				this.options = c.extend(this.options, {
-					proxy: window.sessionStorage
-				}, options)
+				c.extend(this.options, options, {
+	        proxy: window.sessionStorage
+	      })
+
+	      this.init();
 			}, AbstractStore);
 
 		return SessionStore;
@@ -1087,8 +1139,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @date   2014/09/12
 	 *
 	 * @name   Cookie
-	 * @example
-	 * define(['Cookie'], function(Cookie) { ... })
 	 */
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_RESULT__ = function(c, es5) {
 		"use strict";
@@ -1116,7 +1166,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name Cookie
 	   * @grammar new Cookie(options)
 	   * @example
-	   * var cookie = new Cookie();
+	   * var
+	   *   cookie = new Cookie(),
+	   *   cookie2 = new Cookie({isRaw: true, isJson: true});
 		 */
 		function Cookie(options) {
 			this.options = c.extend({
@@ -1136,10 +1188,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *   - domain  {string} 域,domain只能设置当前domain的子domain, 默认为当前domain
 	   *   - secure  {boolean} 安全策略,只有https下能设置 ture or false, 默认为false
 	   *
-	   * @name  set
+	   * @name    set
 	   * @grammar cookie.set(name, value[, options])
 	   * @example
-	   * cookie.set('user', 'mo')
+	   * cookie.set('user', 'mo');
+	   * cookie2.set('user2', {a: 'mojs', b: 'modoc'}, {expires: 1});
 	   */
 	  Cookie.prototype.set = function(name, value, options) {
 	    var
@@ -1149,7 +1202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if(options.expires) expires.setTime(+expires + +options.expires * 864e+5);
 
 	    document.cookie = [
-	      encode(name), '=', stringifyCookie(value),
+	      encode(name, this.options.isRaw), '=', stringifyCookie(value, this.options.isJson),
 	      options.expires ? '; expires=' + expires : '', // use expires attribute, max-age is not supported by IE
 	      options.path    ? '; path=' + options.path : '',
 	      options.domain  ? '; domain=' + options.domain : '',
@@ -1166,7 +1219,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name    get
 	   * @grammar cookie.get(name)
 	   * @example
-	   * cookie.get('user')
+	   * cookie.get('user') => 'mo'
+	   * cookie2.get('user2') => {a: 'mojs', b: 'modoc'}
 		 */
 		Cookie.prototype.get = function(name) {
 			var
@@ -1177,10 +1231,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			es5.each(cookies, function(cookie) {
 				var
 					parts = cookie.split('='),
-					key = decode(parts[0], this.isRaw);
+					key = decode(parts[0], this.options.isRaw);
 
 				if (name === key) {
-					result = parseCookie(parts[1], this.isJson);
+					result = parseCookie(parts[1], this.options.isJson);
 					return false;
 				}
 			}, this)
@@ -1210,14 +1264,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 * es5 polyfill or shim. 其中each,map,filter,some,every可以应用到类数组,对象. indexOf,lastIndexOf,reduce,reduceRight可以应用到类数组
+	 * es5 shim
+	 * 其中each,map,filter,some,every可以应用到类数组,对象
+	 * indexOf,lastIndexOf,reduce,reduceRight可以应用到类数组
+	 *
 	 *
 	 * @author hbmu
 	 * @date   2015/2/3
 	 *
 	 * @name   es5
-	 * @example
-	 * define(['es5'], function(date) { ... })
 	 */
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c) {
 		"use strict";
@@ -1304,7 +1359,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				return results;
 			},
 			/**
-	     * 遍历类数组或者对象,返回一个新数组(obj执行iteratee后返回值为真的obj的元素的集合),其他同map
+	     * 遍历类数组或者对象,返回一个新数组(obj执行iteratee后返回值为真的value的元素的集合),其他同map
 	     *
 	     * @name filter
 			 */
@@ -1343,7 +1398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				var result = true;
 
 				this.each(obj, function(value, index, obj) {
-					if(cb.call(context, value, index, obj) === false) {
+					if(cb.call(context, value, index, obj) !== true) {
 						return (result = false);
 					}
 				});
@@ -1467,14 +1522,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   date
 	 * @example
-	 * define(['date'], function(date) {
-	 *   var birthday = new Date(); // 默认值,当前客户端时间Date实例
-	 *   var birthday = '/Date(1395331200000+0800)/'; // 非JS格式的时间戳,例如.NET
-	 *   var birthday = '1987/11/03 20:30:40'; // 需要重新格式化的字符串,注意12小时制不支持
-	 *   var birthday = '1987/11/03'; // 需要重新格式化的字符串
-	 *   var birthday = 565533040500; // 时间戳(number/string)
-	 *   var birthday = new Date('1987', '10', '03', '20', '30', '40', '500'); // Date实例
-	 * })
+	 * var
+	 *   birthday = new Date(), // 默认值,当前客户端时间Date实例
+	 *   birthday2 = '/Date(562941040500+0800)/', // 非JS格式的时间戳,例如.NET
+	 *   birthday3 = '1987/11/03 20:30:40', // 需要重新格式化的字符串,注意12小时制不支持
+	 *   birthday4 = '1987/11/03', // 需要重新格式化的字符串
+	 *   birthday5 = 562941040500, // 时间戳(number/string)
+	 *   birthday6 = new Date('1987', '10', '03', '20', '30', '40', '500'); // Date实例
 	 */
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(10)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
 		"use strict";
@@ -1566,28 +1620,30 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 		// 处理参数date
 		function dateHandler(date) {
-			var dArray; // 数组化后的日期
+			var
+	      dArray, // 数组化后的日期
+	      ret;
 
 			if (typeof date === 'string') { // 如果date参数是string类型
 				if (rNumberstring.test(date)) { // 如果date参数是number string类型
-					date = new Date(date);
+	        ret = new Date(date);
 				} else { // 这里重新格式化,一般都是从服务端过来的数据,必须有年月日,并且顺序是年月日时分秒毫秒,并且7个值之间有间隔符,间隔符为\D
 					dArray = date.match(rDatestring); // 从string中提取new Date需要的参数
-					if(dArray.length < 3) { // 服务端时间戳,例如NET "/Date(1395331200000+0800)/"
-						date = new Date(+dArray[1]);
+					if(dArray.length < 3) { // 服务端时间戳,例如NET "/Date(562941040500+0800)/"
+	          ret = new Date(+dArray[0]);
 					} else { // 格式化过的
-						date = new Date(dArray[1], dArray[2] - 1, dArray[3] || 1, dArray[4] || 0, dArray[5] || 0, dArray[6] || 0, dArray[7] || 0);
+	          ret = new Date(dArray[0], dArray[1] - 1, dArray[2] || 1, dArray[3] || 0, dArray[4] || 0, dArray[5] || 0, dArray[6] || 0);
 					}
 				}
-			} else if (typeof date === 'number') { // 如果date参数是number类型
-				date = new Date(date);
-			} else if (date == null) { /// 如果不存在date参数
-				date = new Date();
-			} else if (!Object.prototype.toString.call(date) === '[object Date]') { // 如果date参数是date类型
-				return false;
-			}
+			} else if (typeof date === 'number' || Object.prototype.toString.call(date) === '[object Date]') { // 如果date参数是number类型、date类型
+	      ret = new Date(date);
+			} else if (date == null) { // 如果不存在date参数
+	      ret = new Date();
+			} else {
+	      return false;
+	    }
 
-			return date;
+			return ret;
 		}
 
 		var rDatestring = /\d+/g;
@@ -1648,10 +1704,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @name    format
 	     * @grammar date.format([date,] format)
 	     * @example
-	     * date.format('YYYY-MM-DD HH:mm:ss') => '1987-11-03 20:30:40'
-	     * date.format(birthday, 'YYYY-MM-DD HH:mm:ss') => '1987-11-03 20:30:40'
-	     * date.format(birthday, 'YY年M月D日 h时m分s秒 S毫秒 ddd') => '87年12月3日 8时30分40秒 500毫秒 周四'
-	     * date.format(birthday, '\\Q\\ww\\a,第Q季度,第ww周季度,A') => 'Qwwa,第4季度,第49周季度,PM'
+	     * date.format(birthday6, 'YYYY-MM-DD HH:mm:ss:SSS') => '1987-11-03 20:30:40:500'
+	     * date.format(birthday6, 'YY年M月D日 h时m分s秒 S毫秒 ddd') => '87年11月3日 8时30分40秒 500毫秒 周二'
+	     * date.format(birthday6, '\\Q\\ww\\a,第Q季度,第ww周季度,A') => 'Qwwa,第4季度,第45周季度,PM'
 	     *
 	     * @more token映射表 参照 http://momentjs.com/docs/#/displaying/,只引用了其中一部分,涉及到中文的部分稍微有调整
 	     * ==================================================================
@@ -1715,11 +1770,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name    add/sub
 	   * @grammar date.add([date,] name, number)/date.sub([date,] name, number)
 	   * @example
-	   * date.add('Minutes', 5) => Thu Dec 03 1987 20:35:40 GMT+0800 (中国标准时间)
-	   * date.add(birthday, 'Time', 5000) => Thu Dec 03 1987 20:35:45 GMT+0800 (中国标准时间)
-	   * date.sub(birthday, 'Minutes', 5) => Thu Dec 03 1987 20:30:45 GMT+0800 (中国标准时间)
+	   * date.add(birthday6, 'Hours', 1) => Tue Nov 03 1987 21:30:40 GMT+0800 (CST)
+	   * date.sub(birthday6, 'Minutes', 1) => Tue Nov 03 1987 20:29:40 GMT+0800 (CST)
 		 */
-		var  computeFactory = function(method) {
+		var computeFactory = function(method) {
 			date[method] = function(date, name, num) {
 				if (arguments.length === 2) { // 修正参数
 					num = name;
@@ -1749,11 +1803,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @date   2014/10/20
 	 *
 	 * @name   utils
-	 * @example
-	 * define(['util'], function(util) {
-	 *   var str = 'mo';
-	 *   var num = 19871103;
-	 * })
 	 */
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 		"use strict";
@@ -1789,6 +1838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @grammar util.getByteInfo(str[, index])
 	     * @example
 	     * util.getByteInfo('我的生日是1987年11月03日', 5) => Object {length: 24, index: 2}
+	     * util.getByteInfo('生日：1987-08-05') => Object {length: 16}
 			 */
 			getByteInfo: function(str, index) {
 				var
@@ -1824,9 +1874,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @name    pad
 	     * @grammar util.pad(str, len[, fill][, right])
 	     * @example
-	     * util.pad(str, 4, '-') => '--mo'
-	     * util.pad(num, 14, 0, true) => '19871103000000'
-	     * util.pad(num, , 6, null, false, true) => '871103'
+	     * util.pad('mo', 4, '-') => '--mo'
+	     * util.pad(19871103, 14, 0, true) => '19871103000000'
+	     * util.pad(19871103, 6, null, false, true) => '871103'
 			 */
 			pad: function(str, len, fill, right, trim) {
 				str = str + '';
@@ -1852,16 +1902,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 身份证的校验以及从从身份证号码中获取一些信息，例如出生日期，性别
 	 *
 	 * @author hbmu
 	 * @date   2014/10/21
 	 *
 	 * @name   IdCard
-	 * @example
-	 * define(['IdCard'], function(IdCard) { ... })
-	 *
 	 * @more  身份证规则
 	 * =====================================================================
 	 * 身份证15位编码规则 -- dddddd yymmdd xx p
@@ -1881,7 +1928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * 校验位index计算公式         : index = mod(∑(ai×Wi), 11)
 	 * =====================================================================
 	 */
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c) {
+	!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 		"use strict";
 
 		var
@@ -1892,21 +1939,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * 构造函数
 	   *
 		 * @param {string} 身份证号,这里必须是string格式,因为身份证号超出了js的整数精度范围
-		 * @param {object} options,可选
-		 *   - requireAreaInfo {boolean} 是否需要校验、获取省市区信息
 	   *
 	   * @name    IdCard
-	   * @grammar new IdCard(num, options)
+	   * @grammar new IdCard(num)
 	   * @example
-	   * var idCard = new IdCard('610125198711037137', {requireAreaInfo: true});
-	   * // 要校验省市区或者获取省市区信息,需要异步引入一个较大的地区信息data(100K+),没有必要,建议不要设置requireAreaInfo!
+	   * var idCard = new IdCard('610125198711037137');
 		 */
-		function IdCard(num, options) {
-			this.options = c.extend({
-				requireAreaInfo: false
-			}, options);
+		function IdCard(num) {
 			this.num = num;
-		}
+		};
 
 		/**
 	   * 验证校验位,针对18位
@@ -1949,7 +1990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				newMonth = date.getMonth() + 1,
 				newDay = date.getDate(),
 				now = new Date();
-			if (birth.year !== newYear || birth.month !== newMonth || birth.day !== newDay || date > now) return false;
+			if (+birth.year !== newYear || +birth.month !== newMonth || +birth.day !== newDay || date > now) return false;
 			return true;
 		};
 		/**
@@ -1962,15 +2003,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @name getBirth
 	   * @example
-	   * idCard.getBirth() => {year: 1987, month: 11, day: 13}
+	   * idCard.getBirth() => {year: '1987', month: '11', day: '03'}
 		 */
 		IdCard.prototype.getBirth = function() {
 			var num = this.num;
 			if (num.length === 15) num = num.slice(0, 6) + "19" + num.slice(6, 16); // 修正15位的年月日
 			return {
-				year: +num.slice(6, 10),
-				month: +num.slice(10, 12),
-				day: +num.slice(12, 14)
+				year: num.slice(6, 10),
+				month: num.slice(10, 12),
+				day: num.slice(12, 14)
 			};
 		};
 		/**
@@ -1993,7 +2034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 
 		return IdCard;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
 /* 12 */
@@ -2005,8 +2046,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @date   2014/11/7
 	 *
 	 * @name   ParseUrl
-	 * @example
-	 * define(['ParseUrl'], function(ParseUrl) { ... })
 	 * @more   url注解
 	 * =====================================================================
 	 *
@@ -2073,6 +2112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @grammar parseUrl.getAttr([name])
 	   * @example
 	   * parseUrl.getAttr('port') => '80'
+	   * url.getAttr('protocol') => 'http'
 		 */
 		ParseUrl.prototype.getAttr = function(name) {
 			var attrs = this.result.Attr;
@@ -2088,6 +2128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @name    getParam
 	   * @grammar parseUrl.getParam([name])
 	   * @example
+	   * parseUrl.getParam() => {query: 'string'}
 	   * parseUrl.getParam('query') => 'string'
 		 */
 		ParseUrl.prototype.getParam = function(name) {
@@ -2110,7 +2151,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   pubSub
 	 * @example
-	 * define(['pubSub'], function(pubSub) { ... })
+	 * var
+	 *   data = [{
+	 *     name: '熊大',
+	 *     job: '阻止光头强砍树'
+	 *   }, {
+	 *     name: '熊二',
+	 *     job: '调戏光头强'
+	 *   }, {
+	 *     name: '光头强',
+	 *     job: '伐木'
+	 *   }],
+	 *   handler = handler = function(data) {
+	 *     console.log(data.name + '应该' + data.job);
+	 *   },
+	 *   handler2 = function(data) {
+	 *     console.log(data.name + '喜欢' + data.job);
+	 *   };
 	 */
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(8), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (es5, objectPath) {
 		"use strict";
@@ -2159,6 +2216,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name    subscribe
 	     * @grammar pubSub.subscribe(message, handler[, context])
+	     * @example
+	     * pubSub.subscribe('a', handler);
+	     * pubSub.subscribe('a', handler2);
+	     * pubSub.publish('a', data[0]);
+	     * => '熊大应该阻止光头强砍树'
+	     * => '熊大喜欢阻止光头强砍树'
+	     * pubSub.subscribe('b', handler);
+	     * pubSub.subscribe('b.b', handler2);
+	     * pubSub.publish('b', data[1]);
+	     * => '熊二应该调戏光头强'
+	     * => '熊二喜欢调戏光头强'
+	     * pubSub.subscribe('c', handler);
+	     * pubSub.publish('c', data[2]);
+	     * => '光头强应该伐木'
 			 */
 			subscribe: function(message, handler, context) {
 				var handlers = objectPath.get(messages, message);
@@ -2177,6 +2248,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name    unsubscribe
 	     * @grammar pubSub.unsubscribe(message, handler)
+	     * @example
+	     * pubSub.unsubscribe('a', handler2);
+	     * pubSub.publish('a', data[0]);
+	     * => '熊大应该阻止光头强砍树'
+	     * pubSub.unsubscribe('b');
+	     * pubSub.publish('b', data[1]);
+	     * => '熊二喜欢调戏光头强'
 			 */
 			unsubscribe: function(message, handler) {
 				var
@@ -2206,6 +2284,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @name    clear
 	     * @grammar pubSub.unsubscribe(message)
+	     * @example
+	     * pubSub.clear('b');
+	     * pubSub.publish('b', data[1]);
+	     * pubSub.clear();
+	     * pubSub.publish('c', data[2]);
 			 */
 			clear: function(message) {
 				if (message) {
@@ -2223,45 +2306,43 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/**
+	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 常用的正则校验规则
 	 *
 	 * @author hbmu
 	 * @date   2014/11/20
 	 *
 	 * @name   rules
-	 * @examples
-	 * define(['rules'], function(rules) {
-	 *   // 校验，返回 true/false
-	 *   rules.isRequired('校验文本') // 必填
-	 *   rules.isChinese('校验文本') // 中文
-	 *   rules.isDoubleByte() // 双字节
-	 *   rules.isZipcode() // 邮政编码
-	 *   rules.isQq() // QQ
-	 *   rules.isPicture() // 图片
-	 *   rules.isRar() // 压缩文件
-	 *   rules.isMobile() // 手机号
-	 *   rules.isMoney() // 金额
-	 *   rules.isEnglish() // 英文字母
-	 *   rules.isLowerCase() // 英文小写
-	 *   rules.isUpperCase() // 英文大写
-	 *   rules.isNumber() // 纯数字
-	 *   rules.isInteger() // 整数
-	 *   rules.isFloat() // 浮点数
-	 *   rules.isRealName() // 姓名
-	 *   rules.isEmail() // 邮箱
-	 *   rules.isUrl() // 网址
-	 *   rules.isIdCard() // 身份证
-	 *   rules.isPhone() // 座机
-	 *   rules.isAreaNum() // 座机-区号
-	 *   rules.isHostNum() // 座机-主号
-	 *   rules.isExtensionNum() // 座机-分机号
-	 *   rules.isIp() // IP地址
-	 * })
+	 * @example
+	 * // 校验，返回值为true/false
+	 * rules.isRequired('校验文本') // 必填
+	 * rules.isChinese(..) // 中文
+	 * rules.isDoubleByte(..) // 双字节
+	 * rules.isZipcode(..) // 邮政编码
+	 * rules.isQq(..) // QQ
+	 * rules.isPicture(..) // 图片
+	 * rules.isRar(..) // 压缩文件
+	 * rules.isMobile(..) // 手机号
+	 * rules.isMoney(..) // 金额（不能包含分隔符）
+	 * rules.isEnglish(..) // 英文字母
+	 * rules.isLowerCase(..) // 英文小写
+	 * rules.isUpperCase(..) // 英文大写
+	 * rules.isNumber(..) // 纯数字
+	 * rules.isInteger(..) // 整数
+	 * rules.isFloat(..) // 浮点数
+	 * rules.isRealName(..) // 姓名（中英文）
+	 * rules.isEmail(..) // 邮箱
+	 * rules.isUrl(..) // 网址 http://mhbsesal.com
+	 * rules.isIdCard(..) // 身份证
+	 * rules.isPhone(..) // 座机（区号-主号-分机号）029-8784326-11316
+	 * rules.isAreaNum(..) // 座机-区号
+	 * rules.isHostNum(..) // 座机-主号
+	 * rules.isExtensionNum(..) // 座机-分机号
+	 * rules.isIp(..) // IP地址
 	 */
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
 		"use strict";
-	  console.log(process.env.NODE_ENV, 1);
+
 		var rules = {
 			isRequired: function(val) { return val !== '' },
 			isChinese: function(val) { return /^[\u4e00-\u9fa5]+$/.test(val) },
@@ -2291,103 +2372,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		return rules;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = setTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            currentQueue[queueIndex].run();
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    clearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
 
 /***/ }
 /******/ ])

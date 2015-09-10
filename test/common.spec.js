@@ -114,11 +114,9 @@ define(['common'], function (c) {
       expect(c.isNaN(undefined)).toBeFalsy();
     })
 
-    it('size trim keys', function () {
-      expect(c.size([1, 2, 3])).toEqual(3);
-      expect(c.size({a: 1, b: 2})).toEqual(2);
-      expect(c.trim(' abc defg ')).toEqual('abc defg');
-      expect(c.keys({a: 1, b: 2})).toEqual(['a', 'b']);
+    it('baseCreate', function () {
+      expect(c.baseCreate()).toEqual({});
+      expect(c.baseCreate({ a: Foo }).a).toEqual(Foo);
     })
   })
 });
