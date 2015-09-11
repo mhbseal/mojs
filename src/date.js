@@ -120,7 +120,7 @@ define(['util'], function (util) {
 				}
 			}
 		} else if (typeof date === 'number' || Object.prototype.toString.call(date) === '[object Date]') { // 如果date参数是number类型、date类型
-      ret = new Date(date);
+      ret = new Date(+date);
 		} else if (date == null) { // 如果不存在date参数
       ret = new Date();
 		} else {

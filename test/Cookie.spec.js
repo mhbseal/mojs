@@ -15,9 +15,9 @@ define(['Cookie'], function (Cookie) {
       cookie2.set('user2', {a: 'mojs', b: 'modoc'}, {expires: 1});
       expect(cookie2.get('user2')).toEqual({a: 'mojs', b: 'modoc'});
       cookie.remove('user');
-      expect(cookie.get('user')).toBeNull();
+      expect(cookie.get('user')).toEqual('');
       cookie.remove('user2');
-      expect(cookie.get('user2')).toBeNull();
+      expect(cookie.get('user2')).toEqual('');
     })
   })
 });

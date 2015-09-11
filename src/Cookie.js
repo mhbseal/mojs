@@ -92,7 +92,7 @@ define(['common', 'es5'], function(c, es5) {
 		var
 			cookieStr = document.cookie,
 			cookies = cookieStr ? cookieStr.split('; ') : [],
-			result = null;
+			result = ''; // safari下remove cookie只会把值设为空
 
 		es5.each(cookies, function(cookie) {
 			var
