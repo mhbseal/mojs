@@ -8,7 +8,7 @@ config = {
   entry: './src/mo',
   output: {
     path: './dist',
-    filename: 'mo-' + version + (isProdEnv ? '.min' : '') + '.js',
+    filename: 'mo' + (isProdEnv ? '.min' : '') + '.js',
     library: 'mo',
     libraryTarget: 'umd'
   },
