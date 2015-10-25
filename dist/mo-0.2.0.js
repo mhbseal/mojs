@@ -1226,7 +1226,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			var
 				cookieStr = document.cookie,
 				cookies = cookieStr ? cookieStr.split('; ') : [],
-				result = null;
+				result = ''; // safari下remove cookie只会把值设为空
 
 			es5.each(cookies, function(cookie) {
 				var
@@ -1636,7 +1636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 			} else if (typeof date === 'number' || Object.prototype.toString.call(date) === '[object Date]') { // 如果date参数是number类型、date类型
-	      ret = new Date(date);
+	      ret = new Date(+date);
 			} else if (date == null) { // 如果不存在date参数
 	      ret = new Date();
 			} else {

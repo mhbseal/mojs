@@ -1,14 +1,23 @@
 {
-  "name": "mojs",
+  "name": "mo2js",
   "description": "A javascript library",
   "version": "0.2.0",
   "author": "Mu Haibao<mhbseal@163.com>",
+  "bugs": {
+    "url": "https://github.com/mhbseal/mojs/issues"
+  },
   "homepage": "http://github.com/mhbseal/mojs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhbseal/mojs.git"
+  },
+  "main": "./src/mo.js",
   "scripts": {
     "build": "npm run build.dev & npm run build.prod",
     "build.dev": "webpack",
     "build.prod": "webpack --prod",
-    "test": "karma start"
+    "test": "karma start",
+    "doc": "modoc"
   },
   "devDependencies": {
     "jasmine-core": "^2.3.4",
@@ -21,5 +30,6 @@
     "karma-safari-launcher": "^0.1.1",
     "karma-webpack": "^1.7.0",
     "webpack": "^1.12.0"
-  }
+  },
+  "license": "MIT"
 }

@@ -5,7 +5,7 @@ var
   config;
 
 config = {
-  entry: './webpack.output',
+  entry: './src/mo',
   output: {
     path: './dist',
     filename: 'mo-' + version + (isProdEnv ? '.min' : '') + '.js',
