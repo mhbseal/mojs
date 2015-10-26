@@ -22,7 +22,7 @@ config = {
       common: 'common',
       Cookie: 'Cookie',
       date: 'date',
-      es5: 'es5.shim',
+      es5: 'es5.super',
       IdCard: 'IdCard',
       objectPath: 'object.path',
       ParseUrl: 'parse.url',

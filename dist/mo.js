@@ -1,5 +1,5 @@
 /*!
- * mo.js v0.2.0
+ * mo.js v0.2.1
  * http://mhbseal.com/api/mojs.html
  * (c) 2014-2015 Mu Haibao
  */
@@ -773,7 +773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   AbstractStore
 	 */
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(4), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, objectPath, AbstractStorage) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, objectPath) {
 		"use strict";
 
 		/**
@@ -811,7 +811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * 构造函数
 	   *
 	   * @param {object} options
-	   *   - storage         {storage} window.localStorage/window.sessionStorage
+	   *   - proxy           {AbstractStorage} AbstractStorage实例
 	   *   - key             {string} key
 	   *   - lifetime        {string} 生命周期,默认'1H' 单位D,H,M,S. eg. '24H'
 	   *   - rollbackEnabled {boolean} 是否回滚
@@ -820,26 +820,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @grammar new AbstractStore(options)
 	   * @example
 	   * var store = new AbstractStore({
-	   *   storage: window.localStorage,
+	   *   proxy: new AbstractStorage({
+	   *     storage: window.localStorage
+	   *   })
 	   *   key: 'USER'
 	   * }))
 	   */
 		var
 			AbstractStore = c.baseClass(function (options) {
 				this.options = c.extend({
-	        storage: null,
+	        proxy: null,
 					key: null,
 					lifeTime: '1H',
 					rollbackEnabled: false
 				}, options);
-
-	      this.init = function() {
-	        this.proxy = new AbstractStorage({
-	          storage: this.options.storage
-	        })
-	      }
-
-	      this.init();
 			}, {
 				/**
 	       * 设置this.key下的value
@@ -855,7 +849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				set: function (value, tag, isOld) {
 					if (!this.options.rollbackEnabled && isOld) throw 'param rollbackEnabled is false'; // 如果不允许roolback,则不能设置回滚数据
 					var timeout = +new Date() + getLifeTime(this.options.lifeTime);
-					return this.proxy.set(this.options.key, value, tag, timeout, isOld);
+					return this.options.proxy.set(this.options.key, value, tag, timeout, isOld);
 				},
 				/**
 	       * 设置this.key下的value中name的value
@@ -899,7 +893,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.get([tag][, isOld])
 				 */
 				get: function (tag, isOld) {
-					return this.proxy.get(this.options.key, tag, isOld);
+					return this.options.proxy.get(this.options.key, tag, isOld);
 				},
 				/**
 	       * 读取this.key下的value中name的value
@@ -922,7 +916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.getTag()
 				 */
 				getTag: function () {
-					return this.proxy.getTag(this.options.key);
+					return this.options.proxy.getTag(this.options.key);
 				},
 				/**
 	       * 移除存储对象
@@ -931,7 +925,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.remove()
 				 */
 				remove: function () {
-					return this.proxy.remove(this.options.key);
+					return this.options.proxy.remove(this.options.key);
 				},
 				/**
 	       * 设置失效时间
@@ -942,7 +936,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.setExpireTime()
 				 */
 				setExpireTime: function (timeout) {
-					return this.proxy.setExpireTime(this.options.key, timeout);
+					return this.options.proxy.setExpireTime(this.options.key, timeout);
 				},
 				/**
 	       * 返回失效时间
@@ -951,7 +945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @grammar store.getExpireTime()
 				 */
 				getExpireTime: function () {
-					return this.proxy.getExpireTime(this.options.key);
+					return this.options.proxy.getExpireTime(this.options.key);
 				},
 				/**
 	       * 回滚至上个版本
@@ -1082,16 +1076,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *   key: 'USER'
 	 * })
 	 */
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, AbstractStore) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, AbstractStore, AbstractStorage) {
 		"use strict";
 
 		var
 			LocalStore = c.baseClass(function (options) {
 	      c.extend(this.options, options, {
-	        storage: window.localStorage
+	        proxy: new AbstractStorage({
+	          storage: window.localStorage
+	        })
 	      })
-
-	      this.init();
 			}, AbstractStore);
 
 		return LocalStore;
@@ -1113,16 +1107,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *   key: 'USER'
 	 * })
 	 */
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, AbstractStore) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_RESULT__ = function (c, AbstractStore, AbstractStorage) {
 		"use strict";
 
 		var
 			SessionStore = c.baseClass(function (options) {
-				c.extend(this.options, options, {
-	        proxy: window.sessionStorage
+	      c.extend(this.options, options, {
+	        proxy: new AbstractStorage({
+	          storage: window.sessionStorage
+	        })
 	      })
-
-	      this.init();
 			}, AbstractStore);
 
 		return SessionStore;

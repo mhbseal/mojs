@@ -1,14 +1,20 @@
 ﻿/**
  * store test
  */
-define(['AbstractStore', 'LocalStore'], function (AbstractStore, LocalStore) {
+define(['AbstractStore', 'LocalStore', 'AbstractStorage'], function (AbstractStore, LocalStore, AbstractStorage) {
 	"use strict";
 
   describe('AbstractStore LocalStore', function () {
     var
       timeout = +new Date + 2 * 24 * 60 * 60 * 1000,
       store = new LocalStore({ key: 'USER', rollbackEnabled: true }),
-      store2 = new AbstractStore({ storage: window.localStorage, key: 'JOB', lifeTime: '1D' });
+      store2 = new AbstractStore({
+        proxy: new AbstractStorage({
+          storage: window.localStorage
+        }),
+        key: 'JOB',
+        lifeTime: '1D'
+      });
 
     it('all', function () {
       store.set({a: 1, b: 2, c: 3});
@@ -49,11 +55,11 @@ define(['AbstractStore', 'LocalStore'], function (AbstractStore, LocalStore) {
       store.setExpireTime(+new Date - 1000);
       store2.set({a: 1, b: 2, c: 3});
       window.localStorage.setItem('else', '测试gc是否清除此storage key');
-      store2.proxy.gc();
+      store2.options.proxy.gc();
       expect(window.localStorage.getItem('else')).toEqual('测试gc是否清除此storage key');
       expect(store.get()).toBeNull();
       expect(store2.get()).toEqual({a: 1, b: 2, c: 3});
-      store2.proxy.clear();
+      store2.options.proxy.clear();
       expect(store2.get()).toBeNull();
       expect(window.localStorage.getItem('else')).toBeNull();
     })
