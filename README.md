@@ -6,7 +6,9 @@ mojs，一个javascript常用方法库，包含了浏览器中对storage、cooki
 API: http://mhbseal.com/api/mojs.html (已引入mojs，在控制台可即时调试，例如mo.util.guid())
 
 npm  
+
     npm install mo2js
 
 github  
+
     git clone https://github.com/mhbseal/mojs.git
