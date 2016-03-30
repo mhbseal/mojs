@@ -10,7 +10,7 @@
  *   key: 'USER'
  * })
  */
-define(['common', 'AbstractStore', 'AbstractStorage'], function (c, AbstractStore, AbstractStorage) {
+define(['../common', './AbstractStore', './AbstractStorage'], function (c, AbstractStore, AbstractStorage) {
 	"use strict";
 
 	var

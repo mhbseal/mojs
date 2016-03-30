@@ -24,7 +24,7 @@
  *     console.log(data.name + '喜欢' + data.job);
  *   };
  */
-define(['es5', 'objectPath'], function (es5, objectPath) {
+define(['./es5.super', './object.path'], function (es5, objectPath) {
 	"use strict";
 
 	var

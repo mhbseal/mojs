@@ -14,7 +14,7 @@
  *   birthday5 = 562941040500, // 时间戳(number/string)
  *   birthday6 = new Date('1987', '10', '03', '20', '30', '40', '500'); // Date实例
  */
-define(['util'], function (util) {
+define(['./util'], function (util) {
 	"use strict";
 	// 解析date,大部分
 	function dateGetter(name, size, offset, trim) {

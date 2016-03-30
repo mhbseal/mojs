@@ -12,7 +12,25 @@ module.exports = function(config) {
       '**/*.spec.js': ['webpack', 'coverage']
     },
     webpack: {
-      resolve: webpackConfig.resolve
+      resolve: {
+        root: './src',
+        alias: {
+          AbstractStorage: 'store/AbstractStorage',
+          AbstractStore: 'store/AbstractStore',
+          LocalStore: 'store/LocalStore',
+          SessionStore: 'store/SessionStore',
+          common: 'common',
+          Cookie: 'Cookie',
+          date: 'date',
+          es5: 'es5.super',
+          IdCard: 'IdCard',
+          objectPath: 'object.path',
+          ParseUrl: 'parse.url',
+          pubSub: 'pubSub',
+          rules: 'rules',
+          util: 'util'
+        }
+      }
     },
     webpackMiddleware: {
       noInfo: true

@@ -6,7 +6,7 @@
  *
  * @name   Cookie
  */
-define(['common', 'es5'], function(c, es5) {
+define(['./common', './es5.super'], function(c, es5) {
 	"use strict";
 
 	function encode(str, isRaw) {

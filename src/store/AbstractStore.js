@@ -6,7 +6,7 @@
  *
  * @name   AbstractStore
  */
-define(['common', 'objectPath'], function (c, objectPath) {
+define(['../common', '../object.path'], function (c, objectPath) {
 	"use strict";
 
 	/**

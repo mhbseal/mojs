@@ -5,31 +5,12 @@ var
   config;
 
 config = {
-  entry: './src/mo',
+  entry: './src/index',
   output: {
     path: './dist',
     filename: 'mo' + (isProdEnv ? '.min' : '') + '.js',
     library: 'mo',
     libraryTarget: 'umd'
-  },
-  resolve: {
-    root: './src',
-    alias: {
-      AbstractStorage: 'store/AbstractStorage',
-      AbstractStore: 'store/AbstractStore',
-      LocalStore: 'store/LocalStore',
-      SessionStore: 'store/SessionStore',
-      common: 'common',
-      Cookie: 'Cookie',
-      date: 'date',
-      es5: 'es5.super',
-      IdCard: 'IdCard',
-      objectPath: 'object.path',
-      ParseUrl: 'parse.url',
-      pubSub: 'pubSub',
-      rules: 'rules',
-      util: 'util'
-    }
   },
   plugins: [
     new webpack.BannerPlugin(

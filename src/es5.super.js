@@ -9,7 +9,7 @@
  *
  * @name   es5
  */
-define(['common'], function (c) {
+define(['./common'], function (c) {
 	"use strict";
 
 	var

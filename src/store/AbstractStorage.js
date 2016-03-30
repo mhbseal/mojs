@@ -4,7 +4,7 @@
  * @author hbmu
  * @date   2015/4/9
  */
-define(['common'], function (c) {
+define(['../common'], function (c) {
 	"use strict";
 
 	/**

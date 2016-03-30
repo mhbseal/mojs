@@ -1,7 +1,7 @@
 {
   "name": "mo2js",
   "description": "A javascript library",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "author": "Mu Haibao<mhbseal@163.com>",
   "bugs": {
     "url": "https://github.com/mhbseal/mojs/issues"
