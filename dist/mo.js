@@ -1,5 +1,5 @@
 /*!
- * mo.js v0.2.2
+ * mo.js v0.2.3
  * http://mhbseal.com/api/mojs.html
  * (c) 2014-2016 Mu Haibao
  */
@@ -1258,7 +1258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 * es5 shim
+	 * es5 super
 	 * 其中each,map,filter,some,every可以应用到类数组,对象
 	 * indexOf,lastIndexOf,reduce,reduceRight可以应用到类数组
 	 *
