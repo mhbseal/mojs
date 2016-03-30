@@ -71,7 +71,7 @@ define(['common', 'objectPath'], function (c, objectPath) {
 			/**
        * 设置this.key下的value
        *
-			 * @param  {*} value
+			 * @param  {..} value
 			 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 			 * @param  {string} 可选,默认false,是否设置回滚数据
 			 * @return {boolean} 成功true,失败false
@@ -88,7 +88,7 @@ define(['common', 'objectPath'], function (c, objectPath) {
        * 设置this.key下的value中name的value
        *
 			 * @param  {String} name 支持通过路径的方式，如'a.b.c'
-			 * @param  {*} value
+			 * @param  {..} value
 			 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 			 * @param  {string} 可选,默认false,是否设置回滚数据
 			 * @return {boolean} 成功true,失败false
@@ -120,7 +120,7 @@ define(['common', 'objectPath'], function (c, objectPath) {
        *
 			 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 			 * @param  {string} 可选,默认false,是否设置回滚数据
-			 * @return {*} value
+			 * @return {..} value
        *
        * @name    get
        * @grammar store.get([tag][, isOld])
@@ -134,7 +134,7 @@ define(['common', 'objectPath'], function (c, objectPath) {
 			 * @param  {String} name 支持通过路径的方式，如'a.b.c'
 			 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 			 * @param  {string} 可选,默认false,是否设置回滚数据
-			 * @return {*} value
+			 * @return {..} value
        *
        * @name    getAttr
        * @grammar store.getAttr(name[, tag][, isOld])

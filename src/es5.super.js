@@ -49,8 +49,8 @@ define(['common'], function (c) {
      *
 		 * @param {arraylike|object} 类数组或者对象
 		 * @param {function} 迭代函数
-		 *   - param {*} value
-		 *   - param {*} index|key
+		 *   - param {..} value
+		 *   - param {..} index|key
 		 *   - param {array|object} each的第一个参数
 		 * @param {object} iteratee的上下文,可选
      *
@@ -75,8 +75,8 @@ define(['common'], function (c) {
      *
 		 * @param  {arraylike|object} 类数组或者对象
 		 * @param  {function} 迭代函数
-		 *   - param {*} value
-		 *   - param {*} index/key
+		 *   - param {..} value
+		 *   - param {..} index/key
 		 *   - param {array|object} map的第一个参数
 		 * @param  {object} iteratee的上下文,可选
 		 * @return {array} 结果
@@ -144,7 +144,7 @@ define(['common'], function (c) {
      * 返回item在arraylike中的索引值(从0开始找),如果item不存在arraylike中就返回-1,原生不支持NaN
      *
 		 * @param  {arraylike} 需要查找的类数组
-		 * @param  {*} 需要查找的元素
+		 * @param  {..} 需要查找的元素
 		 * @param  {number} 开始索引,可选
 		 * @return {number} 查找到元素的索引值
      *
@@ -193,7 +193,7 @@ define(['common'], function (c) {
      *
 		 * @param   {function} 需要绑定上下文或者是添加参数的函数
 		 * @param   {object} func的上下文
-		 * @param.. {*} 需要添加的n个参数
+		 * @params  {..} 需要添加的n个参数
 		 * @return  {function} 绑定上下文或者是添加参数后函数
      *
      * @name    bind
@@ -223,11 +223,11 @@ define(['common'], function (c) {
      *
      * @param {arraylike} 类数组
      * @param {function} 迭代函数
-     *   - param {*} previousValue
-     *   - param {*} currentValue
-     *   - param {*} index/key
+     *   - param {..} previousValue
+     *   - param {..} currentValue
+     *   - param {..} index/key
      *   - param {array|object} reduce的第一个参数
-     * @param {*} 可选,作为第一次调用iteratee的第一个参数,如果不存在,则把第一次要iteratee的value复制给memo,并且跳过index这次iteratee
+     * @param {..} 可选,作为第一次调用iteratee的第一个参数,如果不存在,则把第一次要iteratee的value复制给memo,并且跳过index这次iteratee
      * @param {object} iteratee的上下文,可选
      *
      * @name    reduce

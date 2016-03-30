@@ -1,10 +1,10 @@
 ﻿/**
- * es5 shim test
+ * es5 super test
  */
 define(['es5'], function (es5) {
 	"use strict";
 
-  describe('es5 shim', function () {
+  describe('es5 super', function () {
     var obj, arr, arr2, arrlike, arrlike2, ret, ret2;
 
     obj = {

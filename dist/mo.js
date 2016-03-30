@@ -1,7 +1,7 @@
 /*!
- * mo.js v0.2.1
+ * mo.js v0.2.2
  * http://mhbseal.com/api/mojs.html
- * (c) 2014-2015 Mu Haibao
+ * (c) 2014-2016 Mu Haibao
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -191,7 +191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				 * 设置数据
 	       *
 				 * @param  {string} key
-				 * @param  {*} value
+				 * @param  {..} value
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {number} 可选,失效时间,默认 now+1天的时间戳
 				 * @param  {string} 可选,默认false,是否设置回滚数据
@@ -233,7 +233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				 * @param  {string} key
 				 * @param  {string} tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {boolean} 可选,默认false,是否读取回滚数据
-				 * @return {*} 读取保存的数据
+				 * @return {..} 读取保存的数据
 				 */
 				get: function (key, tag, isOld) {
 					var
@@ -389,10 +389,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			hasOwn = ObjProto.hasOwnProperty,
 			nativeCreate = Object.create,
 			nativeIsArray = ArrayProto.isArray,
-			rWord = /[^,| ]+/g,
+			rWord = /[^,| ]+/g, // 分隔符正则
 			// 在<IE9下，不枚举的bug
 			hasEnumBug = !{toString: null}.propertyIsEnumerable('toString'),
-			nonEnumerableProps = ['toString',	'toLocaleString', 'valueOf', 'hasOwnProperty',	'isPrototypeOf', 'propertyIsEnumerable', 'constructor']; // 分隔符正则
+			nonEnumerableProps = ['toString',	'toLocaleString', 'valueOf', 'hasOwnProperty',	'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
 
 		// 判断数据类型基础方法
 		function type(obj) {
@@ -425,8 +425,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 		 * @param {object} obj
 		 * @param {function} iteratee
-		 *   - param {*} value
-		 *   - param {*} key
+		 *   - param {..} value
+		 *   - param {..} key
 		 *   - param {object} forIn的第一个参数obj
 		 * @param {object} iteratee的上下文,可选
 	   *
@@ -457,7 +457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 		 * @param   {boolean} 是否深度复制,可选
 		 * @param   {object|array} 目标对象
-		 * @param.. {object|array} 需要extend的对象,可多个参数
+		 * @params  {object|array} 需要extend的对象,可多个参数
 		 * @return  {object|array} extend后的object
 	   *
 	   * @name    extend
@@ -838,7 +838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				/**
 	       * 设置this.key下的value
 	       *
-				 * @param  {*} value
+				 * @param  {..} value
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {string} 可选,默认false,是否设置回滚数据
 				 * @return {boolean} 成功true,失败false
@@ -855,7 +855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * 设置this.key下的value中name的value
 	       *
 				 * @param  {String} name 支持通过路径的方式，如'a.b.c'
-				 * @param  {*} value
+				 * @param  {..} value
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {string} 可选,默认false,是否设置回滚数据
 				 * @return {boolean} 成功true,失败false
@@ -887,7 +887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       *
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {string} 可选,默认false,是否设置回滚数据
-				 * @return {*} value
+				 * @return {..} value
 	       *
 	       * @name    get
 	       * @grammar store.get([tag][, isOld])
@@ -901,7 +901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				 * @param  {String} name 支持通过路径的方式，如'a.b.c'
 				 * @param  {string} 可选,tag标识,如果传递tag,get时会比较tag标识,不一致返回null
 				 * @param  {string} 可选,默认false,是否设置回滚数据
-				 * @return {*} value
+				 * @return {..} value
 	       *
 	       * @name    getAttr
 	       * @grammar store.getAttr(name[, tag][, isOld])
@@ -995,7 +995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 			 * @param  {object} obj
 			 * @param  {string} path
-			 * @param  {*} value
+			 * @param  {..} value
 			 * @return {boolean} 成功true,失败false
 	     *
 	     * @name    set
@@ -1033,7 +1033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 			 * @param  {object} obj
 			 * @param  {string} path
-			 * @return {*} value
+			 * @return {..} value
 	     *
 	     * @name    get
 	     * @grammar objectPath.set(obj, path)
@@ -1175,7 +1175,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * 设置cookie
 	   *
 	   * @param {string} name
-	   * @param {*} value
+	   * @param {..} value
 	   * @param {obj} options
 	   *   - expires {number|string} 失效时长,单位 ‘天’, 默认为Session
 	   *   - path    {string} 路径,path只能设置当前path的子path, 默认为当前path
@@ -1208,7 +1208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * 读取cookie
 	   *
 		 * @param  {string} cookie的name
-		 * @return {*} cookie的value
+		 * @return {..} cookie的value
 	   *
 	   * @name    get
 	   * @grammar cookie.get(name)
@@ -1308,8 +1308,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 			 * @param {arraylike|object} 类数组或者对象
 			 * @param {function} 迭代函数
-			 *   - param {*} value
-			 *   - param {*} index|key
+			 *   - param {..} value
+			 *   - param {..} index|key
 			 *   - param {array|object} each的第一个参数
 			 * @param {object} iteratee的上下文,可选
 	     *
@@ -1334,8 +1334,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 			 * @param  {arraylike|object} 类数组或者对象
 			 * @param  {function} 迭代函数
-			 *   - param {*} value
-			 *   - param {*} index/key
+			 *   - param {..} value
+			 *   - param {..} index/key
 			 *   - param {array|object} map的第一个参数
 			 * @param  {object} iteratee的上下文,可选
 			 * @return {array} 结果
@@ -1403,7 +1403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * 返回item在arraylike中的索引值(从0开始找),如果item不存在arraylike中就返回-1,原生不支持NaN
 	     *
 			 * @param  {arraylike} 需要查找的类数组
-			 * @param  {*} 需要查找的元素
+			 * @param  {..} 需要查找的元素
 			 * @param  {number} 开始索引,可选
 			 * @return {number} 查找到元素的索引值
 	     *
@@ -1452,7 +1452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 			 * @param   {function} 需要绑定上下文或者是添加参数的函数
 			 * @param   {object} func的上下文
-			 * @param.. {*} 需要添加的n个参数
+			 * @params  {..} 需要添加的n个参数
 			 * @return  {function} 绑定上下文或者是添加参数后函数
 	     *
 	     * @name    bind
@@ -1482,11 +1482,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *
 	     * @param {arraylike} 类数组
 	     * @param {function} 迭代函数
-	     *   - param {*} previousValue
-	     *   - param {*} currentValue
-	     *   - param {*} index/key
+	     *   - param {..} previousValue
+	     *   - param {..} currentValue
+	     *   - param {..} index/key
 	     *   - param {array|object} reduce的第一个参数
-	     * @param {*} 可选,作为第一次调用iteratee的第一个参数,如果不存在,则把第一次要iteratee的value复制给memo,并且跳过index这次iteratee
+	     * @param {..} 可选,作为第一次调用iteratee的第一个参数,如果不存在,则把第一次要iteratee的value复制给memo,并且跳过index这次iteratee
 	     * @param {object} iteratee的上下文,可选
 	     *
 	     * @name    reduce
@@ -2175,7 +2175,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 		 * @param {object} 消息集合(messages或者包含子message的message)
 		 * @param {string} 消息
-		 * @param {*} 执行订阅的handler时传入的data
+		 * @param {..} 执行订阅的handler时传入的data
 		 */
 		function _publish(messages, message, data) {
 			var handlers = objectPath.get(messages, message);
@@ -2193,7 +2193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * 发布
 	     *
 			 * @param {string} 消息,支持子message. eg. 'a.b.c'
-			 * @param {*} 执行订阅的handler时传入的data
+			 * @param {..} 执行订阅的handler时传入的data
 	     *
 	     * @name    publish
 	     * @grammar pubSub.publish(message, data)
