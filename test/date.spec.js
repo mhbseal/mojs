@@ -12,6 +12,10 @@ define(['date'], function (date) {
       birthday5 = 562941040500, // 时间戳(number/string)
       birthday6 = new Date('1987', '10', '03', '20', '30', '40', '500'); // Date实例
 
+    it('get', function () {
+      expect(+date.get(birthday3)).toEqual(+new Date('1987', '10', '03', '20', '30', '40'));
+    })
+
     it('format', function () {
       expect(date.format(birthday2, 'YYYY-MM-DD HH:mm:ss:SSS')).toEqual('1987-11-03 20:30:40:500');
       expect(date.format(birthday2, 'YY年M月D日 h时m分s秒 S毫秒 ddd')).toEqual('87年11月3日 8时30分40秒 500毫秒 周二');

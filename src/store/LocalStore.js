@@ -6,7 +6,7 @@
  *
  * @name   LocalStore
  * @example
- * var store = new AbstractStore({
+ * var store = new LocalStore({
  *   key: 'USER'
  * })
  */

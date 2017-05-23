@@ -178,6 +178,20 @@ define(['./util'], function (util) {
 	};
 
 	var date = {
+    /**
+     * 获取非Date类型
+     *
+     * @param  {number|string|date} 非Date类型的date
+     * @return {Date} Date
+     *
+     * @name    get
+     * @grammar date.get(date)
+     * @example
+     * date.get('1987/11/03 21:30:40') => Tue Nov 03 1987 21:30:40 GMT+0800 (CST)
+     */
+    get: function(date) {
+      return dateHandler(date);
+    },
 		/**
      * 格式化日期
      *

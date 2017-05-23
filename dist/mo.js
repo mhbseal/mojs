@@ -1,7 +1,7 @@
 /*!
- * mo.js v0.2.4
+ * mo.js v0.2.5
  * http://mhbseal.com/api/mojs.html
- * (c) 2014-2016 Mu Haibao
+ * (c) 2014-2017 Mu Haibao
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -57,7 +57,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * webpack打包目前不能暴漏多个模块，并且他的requrie解析是静态的，所以这里暂时把全部模块挂在mo下，然后输出mo
@@ -82,9 +82,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * storage的抽象类,主要存储的时候多些例如：tag、timeout、oldValue等字段，来强化storage.
@@ -330,9 +330,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return AbstractStorage;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 一些底层的方法
@@ -761,9 +761,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return common;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * store的抽象类,针对storage中的key,一般不使用该类,常用他的子类LocalStore(options.storage = window.localStorage)、SessionStore(options.storage = window.sessionStorage)
@@ -972,9 +972,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return AbstractStore;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 读取或设置object path下的value
@@ -1060,9 +1060,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return objectPath;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * AbstractStore的子类
@@ -1072,7 +1072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   LocalStore
 	 * @example
-	 * var store = new AbstractStore({
+	 * var store = new LocalStore({
 	 *   key: 'USER'
 	 * })
 	 */
@@ -1091,9 +1091,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return LocalStore;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * AbstractStore的子类
@@ -1103,7 +1103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @name   SessionStore
 	 * @example
-	 * var store = new AbstractStore({
+	 * var store = new SessionStore({
 	 *   key: 'USER'
 	 * })
 	 */
@@ -1122,9 +1122,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return SessionStore;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 操作cookie的方法
@@ -1253,9 +1253,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return Cookie;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * es5 super
@@ -1504,9 +1504,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return es5;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 日期格式化、计算
@@ -1688,6 +1688,20 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 
 		var date = {
+	    /**
+	     * 获取非Date类型
+	     *
+	     * @param  {number|string|date} 非Date类型的date
+	     * @return {Date} Date
+	     *
+	     * @name    get
+	     * @grammar date.get(date)
+	     * @example
+	     * date.get('1987/11/03 21:30:40') => Tue Nov 03 1987 21:30:40 GMT+0800 (CST)
+	     */
+	    get: function(date) {
+	      return dateHandler(date);
+	    },
 			/**
 	     * 格式化日期
 	     *
@@ -1786,9 +1800,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return date;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 工具方法集
@@ -1892,9 +1906,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return utils;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 身份证的校验以及从从身份证号码中获取一些信息，例如出生日期，性别
@@ -2030,9 +2044,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return IdCard;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 解析url
@@ -2040,7 +2054,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @date   2014/11/7
 	 *
 	 * @name   ParseUrl
-	 * @more   url注解
+	 * @more   url注解(注释中&#64;代表@符号,由于modoc生成文档用到@符号)
 	 * =====================================================================
 	 *
 	 * http://username:password&#64;www.example.com:80/path/file.name?query=string#anchor
@@ -2133,9 +2147,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return ParseUrl;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * pub/sub 发布订阅
@@ -2296,9 +2310,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		return pubSub;
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ },
+/***/ }),
 /* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * 常用的正则校验规则
@@ -2367,7 +2381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return rules;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

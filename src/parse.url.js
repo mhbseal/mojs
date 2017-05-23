@@ -4,7 +4,7 @@
  * @date   2014/11/7
  *
  * @name   ParseUrl
- * @more   url注解
+ * @more   url注解(注释中&#64;代表@符号,由于modoc生成文档用到@符号)
  * =====================================================================
  *
  * http://username:password&#64;www.example.com:80/path/file.name?query=string#anchor

@@ -6,7 +6,7 @@
  *
  * @name   SessionStore
  * @example
- * var store = new AbstractStore({
+ * var store = new SessionStore({
  *   key: 'USER'
  * })
  */
