@@ -1,5 +1,5 @@
 /*!
- * mo.js v0.2.5
+ * mo.js v0.2.6
  * http://mhbseal.com/api/mojs.html
  * (c) 2014-2017 Mu Haibao
  */
@@ -822,9 +822,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * var store = new AbstractStore({
 	   *   proxy: new AbstractStorage({
 	   *     storage: window.localStorage
-	   *   })
+	   *   }),
 	   *   key: 'USER'
-	   * }))
+	   * })
 	   */
 		var
 			AbstractStore = c.baseClass(function (options) {
@@ -2049,12 +2049,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 * 解析url
+	 * 解析url (注释中&#64;代表at符号,由于modoc生成文档用到at符号)
 	 * @author hbmu
 	 * @date   2014/11/7
 	 *
 	 * @name   ParseUrl
-	 * @more   url注解(注释中&#64;代表@符号,由于modoc生成文档用到@符号)
+	 * @more   url注解
 	 * =====================================================================
 	 *
 	 * http://username:password&#64;www.example.com:80/path/file.name?query=string#anchor
