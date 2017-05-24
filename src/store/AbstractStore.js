@@ -55,9 +55,9 @@ define(['../common', '../object.path'], function (c, objectPath) {
    * var store = new AbstractStore({
    *   proxy: new AbstractStorage({
    *     storage: window.localStorage
-   *   })
+   *   }),
    *   key: 'USER'
-   * }))
+   * })
    */
 	var
 		AbstractStore = c.baseClass(function (options) {

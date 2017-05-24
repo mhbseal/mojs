@@ -1,10 +1,10 @@
 ﻿/**
- * 解析url
+ * 解析url (注释中&#64;代表at符号,由于modoc生成文档用到at符号)
  * @author hbmu
  * @date   2014/11/7
  *
  * @name   ParseUrl
- * @more   url注解(注释中&#64;代表@符号,由于modoc生成文档用到@符号)
+ * @more   url注解
  * =====================================================================
  *
  * http://username:password&#64;www.example.com:80/path/file.name?query=string#anchor
