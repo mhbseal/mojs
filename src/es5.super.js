@@ -58,6 +58,8 @@ define(['./common'], function (c) {
      * @grammar es5.each(obj, iteratee[, context])
 		 */
 		each: function(obj, cb, context) {
+      if (obj == null) return;
+
 			var
 				index = 0,
 				len = obj.length;
